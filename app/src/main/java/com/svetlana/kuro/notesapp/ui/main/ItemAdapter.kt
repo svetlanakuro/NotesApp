@@ -44,4 +44,8 @@ class ItemAdapter : RecyclerView.Adapter<ItemAdapter.ViewHolder>() {
     fun interface OnItemClickListener {
         fun onItemClick(note: NoteEntity)
     }
+
+    fun setOnItemClickListener(listener: OnItemClickListener?) {
+        this.listener = listener
+    }
 }

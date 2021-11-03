@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import com.svetlana.kuro.notesapp.R
 import com.svetlana.kuro.notesapp.databinding.MainFragmentBinding
 import com.svetlana.kuro.notesapp.domain.repo.RepositoryImpl
+import com.svetlana.kuro.notesapp.ui.pages.DetailFragment
 import com.svetlana.kuro.notesapp.ui.showSnackBar
 
 class MainFragment : Fragment() {
@@ -20,6 +21,21 @@ class MainFragment : Fragment() {
 
     private val viewModel: MainViewModel by lazy { ViewModelProvider(this)[MainViewModel::class.java] }
     private val adapter: ItemAdapter by lazy { ItemAdapter() }
+
+    private val listener: ItemAdapter.OnItemClickListener by lazy {
+        ItemAdapter.OnItemClickListener { note ->
+            activity?.supportFragmentManager?.let { manager ->
+                val bundle = Bundle()
+                note.id?.let { id ->
+                    bundle.putString(DetailFragment.NOTE_EXTRA, id)
+                }
+                manager.beginTransaction()
+                    .replace(R.id.container, DetailFragment.newInstance(bundle))
+                    .addToBackStack("")
+                    .commit()
+            }
+        }
+    }
 
     private var _binding: MainFragmentBinding? = null
     private val binding get() = _binding!!
@@ -53,6 +69,7 @@ class MainFragment : Fragment() {
                 binding.recyclerView.adapter = adapter
                 adapter.noteData = RepositoryImpl().getNoteFromLocalStorage()
 
+                adapter.setOnItemClickListener(listener)
             }
             is AppState.Error -> {
                 binding.mainFragment.showSnackBar(
