@@ -9,6 +9,7 @@ import android.widget.DatePicker
 import androidx.fragment.app.Fragment
 import com.google.android.material.textfield.TextInputEditText
 import com.svetlana.kuro.notesapp.R
+import com.svetlana.kuro.notesapp.databinding.DetailFragmentBinding
 import com.svetlana.kuro.notesapp.domain.NoteEntity
 import java.util.*
 
@@ -20,6 +21,9 @@ class DetailFragment : Fragment() {
         fun newInstance(bundle: Bundle): DetailFragment =
             DetailFragment().apply { arguments = bundle }
     }
+
+    private var _binding: DetailFragmentBinding? = null
+    private val binding get() = _binding!!
 
     private var note: NoteEntity? = null
     private var title: TextInputEditText? = null
@@ -37,15 +41,16 @@ class DetailFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         val view = inflater.inflate(R.layout.detail_fragment, container, false)
-        initView(view)
+        _binding = DetailFragmentBinding.bind(view)
+        initView()
 
         if (note != null) {
             populateView()
         }
 
-        return view
+        return binding.root
     }
 
     override fun onStop() {
@@ -77,11 +82,11 @@ class DetailFragment : Fragment() {
             return cal.time
         }
 
-    private fun initView(view: View) {
-        title = view.findViewById(R.id.input_title)
-        description = view.findViewById(R.id.input_description)
-        datePicker = view.findViewById(R.id.input_date)
-        completed = view.findViewById(R.id.completed)
+    private fun initView() {
+        title = binding.inputTitle
+        description = binding.inputDescription
+        datePicker = binding.inputDate
+        completed = binding.inputCompleted
     }
 
     private fun populateView() {
@@ -101,5 +106,10 @@ class DetailFragment : Fragment() {
             calendar[Calendar.DAY_OF_MONTH],
             null
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }
