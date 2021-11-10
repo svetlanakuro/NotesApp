@@ -26,11 +26,11 @@ class MainFragment : Fragment() {
         ItemAdapter.OnItemClickListener { note ->
             activity?.supportFragmentManager?.let { manager ->
                 val bundle = Bundle()
-                note.id?.let { id ->
-                    bundle.putString(DetailFragment.NOTE_EXTRA, id)
+                note.let { note ->
+                    bundle.putParcelable(DetailFragment.NOTE_EXTRA, note)
                 }
                 manager.beginTransaction()
-                    .replace(R.id.container, DetailFragment.newInstance(bundle))
+                    .replace(R.id.main_activity, DetailFragment.newInstance(bundle))
                     .addToBackStack("")
                     .commit()
             }
