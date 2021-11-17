@@ -9,7 +9,6 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.GridLayoutManager
 import com.svetlana.kuro.notesapp.R
 import com.svetlana.kuro.notesapp.databinding.MainFragmentBinding
-import com.svetlana.kuro.notesapp.domain.repo.RepositoryImpl
 import com.svetlana.kuro.notesapp.ui.pages.DetailFragment
 import com.svetlana.kuro.notesapp.ui.showSnackBar
 
@@ -67,7 +66,7 @@ class MainFragment : Fragment() {
                 binding.loadingLayout.visibility = View.GONE
                 binding.recyclerView.layoutManager = GridLayoutManager(this.context, 2)
                 binding.recyclerView.adapter = adapter
-                adapter.noteData = RepositoryImpl().getNoteFromLocalStorage()
+                adapter.noteData = state.notes
 
                 adapter.setOnItemClickListener(listener)
             }
