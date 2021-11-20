@@ -1,22 +1,13 @@
 package com.svetlana.kuro.notesapp.domain
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
-import java.util.*
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
-@Parcelize
+@Entity(tableName = "note_table")
 data class NoteEntity(
-    var id: String? = null,
-    var title: String? = null,
-    var description: String? = null,
-    var isCompleted: Boolean = false,
-    var date: Date? = null
-) : Parcelable {
-
-    constructor(title: String?, description: String?, completed: Boolean, date: Date?) : this() {
-        this.title = title
-        this.description = description
-        isCompleted = completed
-        this.date = date
-    }
+    var title: String?,
+    var description: String?
+) {
+    @PrimaryKey(autoGenerate = true)
+    var id: Int = 0
 }
