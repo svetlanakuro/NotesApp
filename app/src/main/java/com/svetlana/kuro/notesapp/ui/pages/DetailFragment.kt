@@ -4,10 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.CheckBox
-import android.widget.DatePicker
 import androidx.fragment.app.Fragment
-import com.google.android.material.textfield.TextInputEditText
 import com.svetlana.kuro.notesapp.R
 import com.svetlana.kuro.notesapp.databinding.DetailFragmentBinding
 import com.svetlana.kuro.notesapp.domain.NoteEntity
@@ -26,10 +23,6 @@ class DetailFragment : Fragment() {
     private val binding get() = _binding!!
 
     private var note: NoteEntity? = null
-    private var title: TextInputEditText? = null
-    private var description: TextInputEditText? = null
-    private var completed: CheckBox? = null
-    private var datePicker: DatePicker? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,7 +37,6 @@ class DetailFragment : Fragment() {
     ): View {
         val view = inflater.inflate(R.layout.detail_fragment, container, false)
         _binding = DetailFragmentBinding.bind(view)
-        initView()
 
         if (note != null) {
             populateView()
@@ -59,10 +51,10 @@ class DetailFragment : Fragment() {
     }
 
     private fun collectNoteData(): NoteEntity {
-        val title = Objects.requireNonNull(title!!.text).toString()
-        val description = Objects.requireNonNull(description!!.text).toString()
+        val title = Objects.requireNonNull(binding.inputTitle.text).toString()
+        val description = Objects.requireNonNull(binding.inputDescription.text).toString()
         val date = dateFromDatePicker
-        val completed = completed!!.isChecked
+        val completed = binding.inputCompleted.isChecked
         return if (note != null) {
             val answer = NoteEntity(title, description, completed, date)
             answer.id = note!!.id
@@ -76,23 +68,17 @@ class DetailFragment : Fragment() {
     private val dateFromDatePicker: Date
         get() {
             val cal = Calendar.getInstance()
-            cal[Calendar.YEAR] = datePicker!!.year
-            cal[Calendar.MONTH] = datePicker!!.month
-            cal[Calendar.DAY_OF_MONTH] = datePicker!!.dayOfMonth
+            cal[Calendar.YEAR] = binding.inputDate.year
+            cal[Calendar.MONTH] = binding.inputDate.month
+            cal[Calendar.DAY_OF_MONTH] = binding.inputDate.dayOfMonth
             return cal.time
         }
 
-    private fun initView() {
-        title = binding.inputTitle
-        description = binding.inputDescription
-        datePicker = binding.inputDate
-        completed = binding.inputCompleted
-    }
 
     private fun populateView() {
-        title!!.setText(note!!.title)
-        description!!.setText(note!!.description)
-        completed!!.isChecked = note!!.isCompleted
+        binding.inputTitle.setText(note!!.title)
+        binding.inputDescription.setText(note!!.description)
+        binding.inputCompleted.isChecked = note!!.isCompleted
         note!!.date?.let { initDatePicker(it) }
     }
 
@@ -100,7 +86,7 @@ class DetailFragment : Fragment() {
     private fun initDatePicker(date: Date) {
         val calendar = Calendar.getInstance()
         calendar.time = date
-        datePicker!!.init(
+        binding.inputDate.init(
             calendar[Calendar.YEAR],
             calendar[Calendar.MONTH],
             calendar[Calendar.DAY_OF_MONTH],

@@ -3,9 +3,12 @@ package com.svetlana.kuro.notesapp.domain.repo
 import com.svetlana.kuro.notesapp.domain.NoteEntity
 import java.util.*
 
-class RepositoryImpl : Repository {
-    override fun getNoteFromLocalStorage(): List<NoteEntity> {
-        return listOf(
+class NoteSourceImpl : NoteSource {
+
+    private var notes: MutableList<NoteEntity>? = null
+
+    override fun init(): MutableList<NoteEntity> {
+        notes = mutableListOf(
             NoteEntity(
                 title = "Note one",
                 description = "Description Note first",
@@ -43,9 +46,33 @@ class RepositoryImpl : Repository {
                 date = GregorianCalendar.getInstance().time
             )
         )
+
+        return notes as MutableList<NoteEntity>
     }
 
-    override fun getNoteFromServer(): List<NoteEntity> {
-        TODO("Not yet implemented")
+    override fun getNoteData(position: Int): NoteEntity? {
+        return notes?.get(position)
+    }
+
+    override fun deleteNoteData(position: Int): NoteEntity? {
+        return notes?.removeAt(position)
+    }
+
+    override fun updateNoteData(position: Int, noteData: NoteEntity) {
+        notes?.set(position, noteData)
+    }
+
+    override fun addNoteData(noteData: NoteEntity) {
+        notes?.add(noteData)
+    }
+
+    override fun clearNoteData() {
+        notes?.clear()
+    }
+
+    override fun size(): Int {
+        return if (notes != null) {
+            notes!!.size
+        } else 0
     }
 }
