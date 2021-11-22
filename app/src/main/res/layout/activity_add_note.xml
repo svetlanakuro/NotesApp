@@ -7,20 +7,36 @@
     android:orientation="vertical"
     tools:context=".ui.pages.AddEditNoteActivity">
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edit_text_title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints="@string/note_title"
         android:hint="@string/note_title"
-        android:inputType="text" />
+        android:inputType="text"
+        android:minHeight="@dimen/widget_min_height" />
 
-    <EditText
+    <androidx.appcompat.widget.AppCompatEditText
         android:id="@+id/edit_text_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:autofillHints="@+id/edit_text_description"
         android:hint="@string/note_description"
-        android:inputType="textMultiLine" />
+        android:inputType="textMultiLine"
+        android:minHeight="@dimen/widget_min_height" />
+
+    <androidx.appcompat.widget.AppCompatEditText
+        android:id="@+id/edit_text_link"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:autofillHints="@+id/edit_text_url"
+        android:hint="@string/edit_text_url"
+        android:inputType="textUri"
+        android:minHeight="@dimen/widget_min_height" />
+
+    <WebView
+        android:id="@+id/web_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 </LinearLayout>

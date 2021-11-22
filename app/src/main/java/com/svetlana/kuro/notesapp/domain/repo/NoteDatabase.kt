@@ -51,37 +51,43 @@ abstract class NoteDatabase : RoomDatabase() {
             noteDao?.insert(
                 NoteEntity(
                     "Note one",
-                    "Description Note first"
+                    "Description Note first",
+                    "https://www.google.com/"
                 )
             )
             noteDao?.insert(
                 NoteEntity(
                     "Note two",
-                    "Description Note second"
+                    "Description Note second",
+                    "https://www.google.com/"
                 )
             )
             noteDao?.insert(
                 NoteEntity(
                     "Note three",
-                    "Description Note third"
+                    "Description Note third",
+                    "https://www.google.com/"
                 )
             )
             noteDao?.insert(
                 NoteEntity(
                     "Note four",
-                    "Description Note fourth"
+                    "Description Note fourth",
+                    "https://www.google.com/"
                 )
             )
             noteDao?.insert(
                 NoteEntity(
                     "Note five",
-                    "Description Note fifth"
+                    "Description Note fifth",
+                    "https://www.google.com/"
                 )
             )
             noteDao?.insert(
                 NoteEntity(
                     "Note six",
-                    "Description Note sixth"
+                    "Description Note sixth",
+                    "https://www.google.com/"
                 )
             )
         }

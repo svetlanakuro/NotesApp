@@ -5,9 +5,10 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "note_table")
 data class NoteEntity(
-    var title: String?,
-    var description: String?
+    var noteTitle: String?,
+    var noteDescription: String?,
+    var noteLink: String?
 ) {
     @PrimaryKey(autoGenerate = true)
-    var id: Int = 0
+    var noteId: Int = 0
 }

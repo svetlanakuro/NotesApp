@@ -4,4 +4,5 @@
     <dimen name="text_size_title">20sp</dimen>
     <dimen name="view_margin">8dp</dimen>
     <dimen name="view_padding">8dp</dimen>
+    <dimen name="widget_min_height">48dp</dimen>
 </resources>
