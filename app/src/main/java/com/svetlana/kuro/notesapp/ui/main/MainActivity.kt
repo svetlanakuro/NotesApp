@@ -1,13 +1,17 @@
 package com.svetlana.kuro.notesapp.ui.main
 
 import android.app.Activity
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +31,27 @@ class MainActivity : AppCompatActivity() {
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     private val noteViewModel: NoteViewModel by lazy { ViewModelProvider(this)[NoteViewModel::class.java] }
+
+    private val localMainReceiver = object : BroadcastReceiver() {
+        override fun onReceive(context: Context?, intent: Intent?) {
+            when (intent?.getStringExtra(NETWORK_STATUS)) {
+                AVAILABLE_STATUS -> {
+                    context?.let { onNetworkRestored(it) }
+                }
+                LOST_STATUS -> {
+                    context?.let { onNetworkLost(it) }
+                }
+            }
+        }
+    }
+
+    private fun onNetworkRestored(context: Context) {
+        Toast.makeText(context, "Connection restored", Toast.LENGTH_LONG).show()
+    }
+
+    private fun onNetworkLost(context: Context) {
+        Toast.makeText(context, "Connection lost", Toast.LENGTH_LONG).show()
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -81,6 +106,10 @@ class MainActivity : AppCompatActivity() {
                 startActivityForResult(intent, EDIT_NOTE_REQUEST)
             }
         })
+
+        LocalBroadcastManager.getInstance(this)
+            .registerReceiver(localMainReceiver, IntentFilter(NETWORK_STATUS_INTENT_FILTER))
+        NetworkMonitor(application).startNetworkCallback()
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -135,5 +164,11 @@ class MainActivity : AppCompatActivity() {
             Toast.makeText(this, "Note not saved!", Toast.LENGTH_SHORT).show()
         }
 
+    }
+
+    override fun onDestroy() {
+        LocalBroadcastManager.getInstance(this)
+            .unregisterReceiver(localMainReceiver)
+        super.onDestroy()
     }
 }
