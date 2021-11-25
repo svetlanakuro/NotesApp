@@ -73,9 +73,10 @@ class MainActivity : AppCompatActivity() {
         adapter.setOnItemClickListener(object : NoteAdapter.OnItemClickListener {
             override fun onItemClick(note: NoteEntity) {
                 val intent = Intent(baseContext, AddEditNoteActivity::class.java)
-                intent.putExtra(AddEditNoteActivity.EXTRA_ID, note.id)
-                intent.putExtra(AddEditNoteActivity.EXTRA_TITLE, note.title)
-                intent.putExtra(AddEditNoteActivity.EXTRA_DESCRIPTION, note.description)
+                intent.putExtra(AddEditNoteActivity.EXTRA_ID, note.noteId)
+                intent.putExtra(AddEditNoteActivity.EXTRA_TITLE, note.noteTitle)
+                intent.putExtra(AddEditNoteActivity.EXTRA_DESCRIPTION, note.noteDescription)
+                intent.putExtra(AddEditNoteActivity.EXTRA_LINK, note.noteLink)
 
                 startActivityForResult(intent, EDIT_NOTE_REQUEST)
             }
@@ -107,7 +108,8 @@ class MainActivity : AppCompatActivity() {
             val newNote = data?.let {
                 NoteEntity(
                     data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE),
-                    data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
+                    data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION),
+                    data.getStringExtra(AddEditNoteActivity.EXTRA_LINK)
                 )
             }
             if (newNote != null) {
@@ -124,9 +126,10 @@ class MainActivity : AppCompatActivity() {
 
             val updateNote = NoteEntity(
                 data!!.getStringExtra(AddEditNoteActivity.EXTRA_TITLE),
-                data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
+                data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION),
+                data.getStringExtra(AddEditNoteActivity.EXTRA_LINK)
             )
-            updateNote.id = data.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1)
+            updateNote.noteId = data.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1)
             noteViewModel.update(updateNote)
         } else {
             Toast.makeText(this, "Note not saved!", Toast.LENGTH_SHORT).show()

@@ -16,11 +16,11 @@ class NoteAdapter : ListAdapter<NoteEntity, NoteAdapter.ViewHolder>(DIFF_CALLBAC
     companion object {
         private val DIFF_CALLBACK = object : DiffUtil.ItemCallback<NoteEntity>() {
             override fun areItemsTheSame(oldItem: NoteEntity, newItem: NoteEntity): Boolean {
-                return oldItem.id == newItem.id
+                return oldItem.noteId == newItem.noteId
             }
 
             override fun areContentsTheSame(oldItem: NoteEntity, newItem: NoteEntity): Boolean {
-                return oldItem.title == newItem.title && oldItem.description == newItem.description
+                return oldItem.noteTitle == newItem.noteTitle && oldItem.noteDescription == newItem.noteDescription
             }
         }
     }
@@ -36,8 +36,8 @@ class NoteAdapter : ListAdapter<NoteEntity, NoteAdapter.ViewHolder>(DIFF_CALLBAC
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val currentNote: NoteEntity = getItem(position)
 
-        holder.textViewTitle.text = currentNote.title
-        holder.textViewDescription.text = currentNote.description
+        holder.textViewTitle.text = currentNote.noteTitle
+        holder.textViewDescription.text = currentNote.noteDescription
     }
 
     fun getNoteAt(position: Int): NoteEntity {
