@@ -13,6 +13,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.svetlana.kuro.notesapp.R
 import com.svetlana.kuro.notesapp.databinding.ActivityAddNoteBinding
+import com.svetlana.kuro.notesapp.ui.main.MainActivity
 import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.net.MalformedURLException
@@ -34,7 +35,6 @@ class AddEditNoteActivity : AppCompatActivity() {
         )
     }
 
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -47,8 +47,10 @@ class AddEditNoteActivity : AppCompatActivity() {
             binding.editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION))
             binding.editTextLink.setText(intent.getStringExtra(EXTRA_LINK))
             linkPreview()
+            MainActivity.NoteAnalytics.logEvent(this, "AddEditNoteActivity: Edit Note")
         } else {
             title = "Add Note"
+            MainActivity.NoteAnalytics.logEvent(this, "AddEditNoteActivity: Add Note")
         }
 
     }
@@ -109,6 +111,10 @@ class AddEditNoteActivity : AppCompatActivity() {
                 .isBlank() || binding.editTextDescription.text.toString().trim().isBlank()
         ) {
             Toast.makeText(this, "Can not insert empty note!", Toast.LENGTH_SHORT).show()
+            MainActivity.NoteAnalytics.logEvent(
+                this,
+                "AddEditNoteActivity: Can not insert empty note!"
+            )
             return
         }
 

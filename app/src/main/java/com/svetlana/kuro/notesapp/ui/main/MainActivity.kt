@@ -28,6 +28,14 @@ class MainActivity : AppCompatActivity() {
         const val EDIT_NOTE_REQUEST = 2
     }
 
+    object NoteAnalytics {
+        fun logEvent(context: Context, event: String) {
+            context.startService(Intent(context, NoteAnalyticsService::class.java).apply {
+                putExtra(NOTE_ANALYTICS_SERVICE_EXTRA, event)
+            })
+        }
+    }
+
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
 
     private val noteViewModel: NoteViewModel by lazy { ViewModelProvider(this)[NoteViewModel::class.java] }
@@ -91,6 +99,7 @@ class MainActivity : AppCompatActivity() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 noteViewModel.delete(adapter.getNoteAt(viewHolder.adapterPosition))
                 Toast.makeText(baseContext, "Note Deleted!", Toast.LENGTH_SHORT).show()
+                NoteAnalytics.logEvent(baseContext, "MainActivity: Note Deleted!")
             }
         }
         ).attachToRecyclerView(recycler_view)
@@ -122,6 +131,7 @@ class MainActivity : AppCompatActivity() {
             R.id.delete_all_notes -> {
                 noteViewModel.deleteAllNotes()
                 Toast.makeText(this, "All notes deleted!", Toast.LENGTH_SHORT).show()
+                NoteAnalytics.logEvent(this, "MainActivity: All notes deleted!")
                 true
             }
             else -> {
@@ -146,11 +156,13 @@ class MainActivity : AppCompatActivity() {
             }
 
             Toast.makeText(this, "Note saved!", Toast.LENGTH_SHORT).show()
+            NoteAnalytics.logEvent(this, "MainActivity: Note saved!")
         } else if (requestCode == EDIT_NOTE_REQUEST && resultCode == Activity.RESULT_OK) {
             val id = data?.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1)
 
             if (id == -1) {
                 Toast.makeText(this, "Could not update! Error!", Toast.LENGTH_SHORT).show()
+                NoteAnalytics.logEvent(this, "MainActivity: Could not update! Error!")
             }
 
             val updateNote = NoteEntity(
@@ -162,6 +174,7 @@ class MainActivity : AppCompatActivity() {
             noteViewModel.update(updateNote)
         } else {
             Toast.makeText(this, "Note not saved!", Toast.LENGTH_SHORT).show()
+            NoteAnalytics.logEvent(this, "MainActivity: Note not saved!")
         }
 
     }
