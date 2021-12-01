@@ -25,18 +25,11 @@
         android:inputType="textMultiLine"
         android:minHeight="@dimen/widget_min_height" />
 
-    <androidx.appcompat.widget.AppCompatEditText
-        android:id="@+id/edit_text_link"
+    <androidx.appcompat.widget.AppCompatTextView
+        android:id="@+id/result_text_view"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:autofillHints="@+id/edit_text_url"
-        android:hint="@string/edit_text_url"
-        android:inputType="textUri"
-        android:minHeight="@dimen/widget_min_height" />
-
-    <WebView
-        android:id="@+id/web_view"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/view_margin"
+        android:text="Hello World!" />
 
 </LinearLayout>

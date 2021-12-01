@@ -1,4 +1,4 @@
-package com.svetlana.kuro.notesapp.ui.main
+package com.svetlana.kuro.notesapp.utils
 
 import android.app.IntentService
 import android.content.Intent
