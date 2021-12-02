@@ -19,3 +19,7 @@ This is a note taking app. Provides for editing notes and a mark on the completi
 28/11/21 branch lesson-6: Implemented NetworkMonitor for subscription to the link change event (ACCESS_NETWORK_STATE) and notify the user about it.
 
 28/11/21 branch lesson-6: Added NoteAnalyticsService, added logging of all operations with notes (add, edit, delete).
+
+03/12/21 branch lesson-7: Removed link field from NoteEntity. Moved in utils directory: NetworkMonitor.kt and NoteAnalyticsService.kt.
+
+03/12/21 branch lesson-7: Added "movie of the day" field for each note. Implemented getting Array Movie from TheMovieDB with Retrofit. Used Coil to load movie poster.
