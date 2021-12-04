@@ -19,6 +19,7 @@ import com.svetlana.kuro.notesapp.R
 import com.svetlana.kuro.notesapp.databinding.ActivityMainBinding
 import com.svetlana.kuro.notesapp.domain.NoteEntity
 import com.svetlana.kuro.notesapp.ui.pages.AddEditNoteActivity
+import com.svetlana.kuro.notesapp.utils.*
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity() {
@@ -110,7 +111,6 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra(AddEditNoteActivity.EXTRA_ID, note.noteId)
                 intent.putExtra(AddEditNoteActivity.EXTRA_TITLE, note.noteTitle)
                 intent.putExtra(AddEditNoteActivity.EXTRA_DESCRIPTION, note.noteDescription)
-                intent.putExtra(AddEditNoteActivity.EXTRA_LINK, note.noteLink)
 
                 startActivityForResult(intent, EDIT_NOTE_REQUEST)
             }
@@ -147,8 +147,7 @@ class MainActivity : AppCompatActivity() {
             val newNote = data?.let {
                 NoteEntity(
                     data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE),
-                    data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION),
-                    data.getStringExtra(AddEditNoteActivity.EXTRA_LINK)
+                    data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
                 )
             }
             if (newNote != null) {
@@ -167,8 +166,7 @@ class MainActivity : AppCompatActivity() {
 
             val updateNote = NoteEntity(
                 data!!.getStringExtra(AddEditNoteActivity.EXTRA_TITLE),
-                data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION),
-                data.getStringExtra(AddEditNoteActivity.EXTRA_LINK)
+                data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
             )
             updateNote.noteId = data.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1)
             noteViewModel.update(updateNote)

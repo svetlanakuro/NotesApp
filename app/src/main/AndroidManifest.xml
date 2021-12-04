@@ -27,7 +27,7 @@
             android:name=".ui.pages.AddEditNoteActivity"
             android:parentActivityName=".ui.pages.AddEditNoteActivity" />
 
-        <service android:name=".ui.main.NoteAnalyticsService" />
+        <service android:name=".utils.NoteAnalyticsService" />
 
     </application>
 
