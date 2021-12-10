@@ -7,11 +7,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import coil.api.load
 import com.svetlana.kuro.notesapp.R
 import com.svetlana.kuro.notesapp.databinding.ActivityAddNoteBinding
-import com.svetlana.kuro.notesapp.domain.repo.MovieDBRepo
-import com.svetlana.kuro.notesapp.domain.repo.RetrofitMovieDBRepoImpl
 import com.svetlana.kuro.notesapp.ui.main.MainActivity
 
 class AddEditNoteActivity : AppCompatActivity() {
@@ -27,8 +24,6 @@ class AddEditNoteActivity : AppCompatActivity() {
         )
     }
 
-    private val movieDBRepoEntity: MovieDBRepo by lazy { RetrofitMovieDBRepoImpl() }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
@@ -40,24 +35,6 @@ class AddEditNoteActivity : AppCompatActivity() {
             binding.editTextTitle.setText(intent.getStringExtra(EXTRA_TITLE))
             binding.editTextDescription.setText(intent.getStringExtra(EXTRA_DESCRIPTION))
 
-            movieDBRepoEntity.getMovieAsync(
-                onSuccess = { movie ->
-                    runOnUiThread {
-                        binding.movieOfTheDay.text = getText(R.string.movie_of_the_day)
-                        binding.resultMovieOriginalTitle.text =
-                            movie.results?.let { movie.results[it.lastIndex].originalTitle }
-                        binding.resultMovieOverview.text =
-                            movie.results?.let { movie.results[it.lastIndex].overview }
-                        binding.resultMoviePoster.load("https://image.tmdb.org/t/p/w500/" + movie.results?.let { movie.results[it.lastIndex].posterLink })
-                    }
-                },
-                onError = {
-                    runOnUiThread {
-                        Toast.makeText(this, "Ошибка ${it.message}", Toast.LENGTH_SHORT).show()
-                        MainActivity.NoteAnalytics.logEvent(this, "Ошибка ${it.message}")
-                    }
-                }
-            )
             MainActivity.NoteAnalytics.logEvent(this, "AddEditNoteActivity: Edit Note")
         } else {
             title = "Add Note"
