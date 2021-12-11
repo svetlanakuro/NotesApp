@@ -7,6 +7,7 @@
     <string name="add_note">Add Note</string>
     <string name="save_note">Save Note</string>
     <string name="delete_all_notes">Delete All Notes</string>
-    <string name="movie_of_the_day">Movie of the day</string>
+    <string name="click_note_location">Click here to add a location</string>
+
 
 </resources>
