@@ -13,6 +13,12 @@ import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 import com.svetlana.kuro.notesapp.R
 import com.svetlana.kuro.notesapp.databinding.ActivityAddNoteBinding
 import com.svetlana.kuro.notesapp.ui.main.MainActivity
@@ -34,12 +40,23 @@ class AddEditNoteActivity : AppCompatActivity() {
         )
     }
 
+    private var mapView: GoogleMap? = null
+
     private val permissionLauncher =
         registerForActivityResult(ActivityResultContracts.RequestPermission()) { isGranted ->
             binding.textViewLocation.isVisible = isGranted
         }
 
     private var location: Location? = null
+        set(value) {
+            field = value
+
+            value?.let {
+                val latlon = LatLng(it.latitude, it.longitude)
+                mapView?.addMarker(MarkerOptions().position(latlon))
+                mapView?.moveCamera(CameraUpdateFactory.newLatLng(latlon))
+            }
+        }
 
     private val locationManager by lazy { getSystemService(LOCATION_SERVICE) as LocationManager }
 
@@ -76,8 +93,21 @@ class AddEditNoteActivity : AppCompatActivity() {
                     binding.textViewLocation.text = address
                 }
             }
+
+            registerMapCallback {
+                mapView = it
+                Toast.makeText(this@AddEditNoteActivity, "Map Ready", Toast.LENGTH_SHORT).show()
+                val sydney = LatLng(-34.0, 151.0)
+                it.addMarker(MarkerOptions().position(sydney).title("Marker in Sydney"))
+                it.moveCamera(CameraUpdateFactory.newLatLng(sydney))
+            }
         }
 
+    }
+
+    private fun registerMapCallback(callback: OnMapReadyCallback) {
+        val mapFragment = supportFragmentManager.findFragmentById(R.id.map) as SupportMapFragment?
+        mapFragment?.getMapAsync(callback)
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
