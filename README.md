@@ -29,3 +29,7 @@ This is a note taking app. Provides for editing notes and a mark on the completi
 05/12/21 branch lesson9: Added permission request. Shown an explanation of what this permission is for. If the user selected "Don't ask again" an explanation is shown again and will Intent to settings.
 
 10/12/21 branch lesson8: Removed "movie of the day" field in notes. Removed unused MovieDB classes.
+
+11/12/21 branch lesson10: Added "location" field for notes. Implemented getting and updating the location address on click.
+
+15/12/21 branch lesson10: Added Google Maps API. By clicking on the "location" field in the note, a marker on the map should be shown.

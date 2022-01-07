@@ -1,30 +1,20 @@
 package com.svetlana.kuro.notesapp.ui.main
 
-import android.Manifest
 import android.app.Activity
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
-import android.content.pm.PackageManager
-import android.net.Uri
-import android.os.Build
 import android.os.Bundle
-import android.os.Looper
-import android.provider.Settings
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.Toast
-import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import androidx.lifecycle.ViewModelProvider
 import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.gms.location.*
 import com.svetlana.kuro.notesapp.R
 import com.svetlana.kuro.notesapp.databinding.ActivityMainBinding
 import com.svetlana.kuro.notesapp.domain.NoteEntity
@@ -37,9 +27,6 @@ class MainActivity : AppCompatActivity() {
     companion object {
         const val ADD_NOTE_REQUEST = 1
         const val EDIT_NOTE_REQUEST = 2
-
-        private const val MY_PERMISSIONS_REQUEST_LOCATION = 99
-        private const val MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION = 66
     }
 
     object NoteAnalytics {
@@ -63,30 +50,6 @@ class MainActivity : AppCompatActivity() {
                 LOST_STATUS -> {
                     context?.let { onNetworkLost(it) }
                 }
-            }
-        }
-    }
-
-    private var fusedLocationProvider: FusedLocationProviderClient? = null
-    private val locationRequest: LocationRequest = LocationRequest.create().apply {
-        interval = 30
-        fastestInterval = 10
-        priority = LocationRequest.PRIORITY_BALANCED_POWER_ACCURACY
-        maxWaitTime = 60
-    }
-
-    private var locationCallback: LocationCallback = object : LocationCallback() {
-        override fun onLocationResult(locationResult: LocationResult) {
-            val locationList = locationResult.locations
-            if (locationList.isNotEmpty()) {
-                // The last location in the list is the newest
-                val location = locationList.last()
-                Toast.makeText(
-                    this@MainActivity,
-                    "Got Location: $location",
-                    Toast.LENGTH_LONG
-                )
-                    .show()
             }
         }
     }
@@ -148,6 +111,7 @@ class MainActivity : AppCompatActivity() {
                 intent.putExtra(AddEditNoteActivity.EXTRA_ID, note.noteId)
                 intent.putExtra(AddEditNoteActivity.EXTRA_TITLE, note.noteTitle)
                 intent.putExtra(AddEditNoteActivity.EXTRA_DESCRIPTION, note.noteDescription)
+                intent.putExtra(AddEditNoteActivity.EXTRA_LOCATION, note.noteLocation)
 
                 startActivityForResult(intent, EDIT_NOTE_REQUEST)
             }
@@ -156,200 +120,6 @@ class MainActivity : AppCompatActivity() {
         LocalBroadcastManager.getInstance(this)
             .registerReceiver(localMainReceiver, IntentFilter(NETWORK_STATUS_INTENT_FILTER))
         NetworkMonitor(application).startNetworkCallback()
-
-        fusedLocationProvider = LocationServices.getFusedLocationProviderClient(this)
-
-        checkLocationPermission()
-    }
-
-    override fun onResume() {
-        super.onResume()
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-            == PackageManager.PERMISSION_GRANTED
-        ) {
-
-            fusedLocationProvider?.requestLocationUpdates(
-                locationRequest,
-                locationCallback,
-                Looper.getMainLooper()
-            )
-        }
-    }
-
-    override fun onPause() {
-        super.onPause()
-        if (ContextCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            )
-            == PackageManager.PERMISSION_GRANTED
-        ) {
-
-            fusedLocationProvider?.removeLocationUpdates(locationCallback)
-        }
-    }
-
-    private fun checkLocationPermission() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_FINE_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(
-                    this,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-                )
-            ) {
-                // Show an explanation to the user asynchronously. This thread waiting for the user's response
-                AlertDialog.Builder(this)
-                    .setTitle("Location Permission Needed")
-                    .setMessage("This app needs the Location permission to record location when taking notes.\nPlease accept to use location functionality.")
-                    .setPositiveButton(
-                        "OK"
-                    ) { _, _ ->
-                        // Prompt the user once explanation has been shown.
-                        requestLocationPermission()
-                    }
-                    .create()
-                    .show()
-            } else {
-                // No explanation needed, we can request the permission.
-                requestLocationPermission()
-            }
-        } else {
-            checkBackgroundLocation()
-        }
-    }
-
-    private fun checkBackgroundLocation() {
-        if (ActivityCompat.checkSelfPermission(
-                this,
-                Manifest.permission.ACCESS_BACKGROUND_LOCATION
-            ) != PackageManager.PERMISSION_GRANTED
-        ) {
-            requestBackgroundLocationPermission()
-        }
-    }
-
-    private fun requestLocationPermission() {
-        ActivityCompat.requestPermissions(
-            this,
-            arrayOf(
-                Manifest.permission.ACCESS_FINE_LOCATION,
-            ),
-            MY_PERMISSIONS_REQUEST_LOCATION
-        )
-    }
-
-    private fun requestBackgroundLocationPermission() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(
-                    Manifest.permission.ACCESS_BACKGROUND_LOCATION
-                ),
-                MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION
-            )
-        } else {
-            ActivityCompat.requestPermissions(
-                this,
-                arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
-                MY_PERMISSIONS_REQUEST_LOCATION
-            )
-        }
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        when (requestCode) {
-            MY_PERMISSIONS_REQUEST_LOCATION -> {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted. Do the location-related task you need to do.
-                    if (ContextCompat.checkSelfPermission(
-                            this,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        fusedLocationProvider?.requestLocationUpdates(
-                            locationRequest,
-                            locationCallback,
-                            Looper.getMainLooper()
-                        )
-
-                        // Now check background location
-                        checkBackgroundLocation()
-                    }
-
-                } else {
-
-                    // permission denied! Disable the functionality that depends on this permission.
-                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show()
-
-                    // Check if we are in a state where the user has selected "Don't ask again".
-                    if (!ActivityCompat.shouldShowRequestPermissionRationale(
-                            this,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        )
-                    ) {
-                        // Show an explanation to the user asynchronously. This thread waiting for the user's response
-                        AlertDialog.Builder(this)
-                            .setTitle("Location Permission Needed")
-                            .setMessage("This app needs the Location permission to record location when taking notes.\nPlease accept to use location functionality.")
-                            .setPositiveButton(
-                                "OK"
-                            ) { _, _ ->
-                                // Prompt the user once explanation has been shown.
-                                startActivity(
-                                    Intent(
-                                        Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
-                                        Uri.fromParts("package", this.packageName, null),
-                                    ),
-                                )
-                            }
-                            .create()
-                            .show()
-                    }
-                }
-                return
-            }
-            MY_PERMISSIONS_REQUEST_BACKGROUND_LOCATION -> {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted. Do the location-related task you need to do.
-                    if (ContextCompat.checkSelfPermission(
-                            this,
-                            Manifest.permission.ACCESS_FINE_LOCATION
-                        ) == PackageManager.PERMISSION_GRANTED
-                    ) {
-                        fusedLocationProvider?.requestLocationUpdates(
-                            locationRequest,
-                            locationCallback,
-                            Looper.getMainLooper()
-                        )
-
-                        Toast.makeText(
-                            this,
-                            "Granted Background Location Permission",
-                            Toast.LENGTH_LONG
-                        ).show()
-                    }
-                } else {
-
-                    // permission denied! Disable the functionality that depends on this permission.
-                    Toast.makeText(this, "permission denied", Toast.LENGTH_LONG).show()
-                }
-                return
-
-            }
-        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu?): Boolean {
@@ -378,7 +148,8 @@ class MainActivity : AppCompatActivity() {
             val newNote = data?.let {
                 NoteEntity(
                     data.getStringExtra(AddEditNoteActivity.EXTRA_TITLE),
-                    data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
+                    data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION),
+                    data.getStringExtra(AddEditNoteActivity.EXTRA_LOCATION)
                 )
             }
             if (newNote != null) {
@@ -397,7 +168,8 @@ class MainActivity : AppCompatActivity() {
 
             val updateNote = NoteEntity(
                 data!!.getStringExtra(AddEditNoteActivity.EXTRA_TITLE),
-                data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION)
+                data.getStringExtra(AddEditNoteActivity.EXTRA_DESCRIPTION),
+                data.getStringExtra(AddEditNoteActivity.EXTRA_LOCATION)
             )
             updateNote.noteId = data.getIntExtra(AddEditNoteActivity.EXTRA_ID, -1)
             noteViewModel.update(updateNote)
