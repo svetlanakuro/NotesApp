@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "589535520133",
+    "project_id": "notes-app-cc8f1",
+    "storage_bucket": "notes-app-cc8f1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:589535520133:android:39a005cb942e14e46710ec",
+        "android_client_info": {
+          "package_name": "com.svetlana.kuro.notesapp"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "589535520133-it9pgj6v8qm886511b8rj2dc077k27ve.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBQoF3O8h96MjFizjTBf-zhno0_OMohPA4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "589535520133-it9pgj6v8qm886511b8rj2dc077k27ve.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
