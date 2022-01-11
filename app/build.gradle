@@ -17,9 +17,19 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("apikey.properties").newDataInputStream())
+        def googleMapsApiKey = properties.getProperty("google_maps_key", "")
+        resValue "string", "GOOGLE_MAPS_KEY", googleMapsApiKey
     }
 
     buildTypes {
+        beta {
+            initWith debug
+            versionNameSuffix '.beta'
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -34,6 +44,17 @@ android {
     }
     buildFeatures {
         viewBinding true
+    }
+    flavorDimensions 'version'
+    productFlavors {
+        free {
+            dimension 'version'
+            versionNameSuffix '.free'
+        }
+        paid {
+            dimension 'version'
+            versionNameSuffix '.paid'
+        }
     }
 }
 
@@ -56,13 +77,6 @@ dependencies {
     implementation 'androidx.room:room-runtime:2.4.0'
     implementation 'com.google.firebase:firebase-messaging:23.0.0'
     kapt 'androidx.room:room-compiler:2.4.0'
-
-    // Retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.9.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
-
-    // Coil
-    implementation 'io.coil-kt:coil:0.11.0'
 
     // Location services
     implementation 'com.google.android.gms:play-services-maps:18.0.2'
