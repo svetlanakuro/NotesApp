@@ -55,41 +55,6 @@ abstract class NoteDatabase : RoomDatabase() {
                     "Unknown Location"
                 )
             )
-            noteDao?.insert(
-                NoteEntity(
-                    "Note two",
-                    "Description Note second",
-                    "Unknown Location"
-                )
-            )
-            noteDao?.insert(
-                NoteEntity(
-                    "Note three",
-                    "Description Note third",
-                    "Unknown Location"
-                )
-            )
-            noteDao?.insert(
-                NoteEntity(
-                    "Note four",
-                    "Description Note fourth",
-                    "Unknown Location"
-                )
-            )
-            noteDao?.insert(
-                NoteEntity(
-                    "Note five",
-                    "Description Note fifth",
-                    "Unknown Location"
-                )
-            )
-            noteDao?.insert(
-                NoteEntity(
-                    "Note six",
-                    "Description Note sixth",
-                    "Unknown Location"
-                )
-            )
         }
     }
 
