@@ -1,6 +1,9 @@
 plugins {
     id 'com.android.application'
     id 'kotlin-android'
+    id 'kotlin-android-extensions'
+    id 'kotlin-kapt'
+    id 'com.google.gms.google-services'
 }
 
 android {
@@ -14,9 +17,19 @@ android {
         versionName "1.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
+        Properties properties = new Properties()
+        properties.load(project.rootProject.file("apikey.properties").newDataInputStream())
+        def googleMapsApiKey = properties.getProperty("google_maps_key", "")
+        resValue "string", "GOOGLE_MAPS_KEY", googleMapsApiKey
     }
 
     buildTypes {
+        beta {
+            initWith debug
+            versionNameSuffix '.beta'
+        }
+
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
@@ -32,6 +45,17 @@ android {
     buildFeatures {
         viewBinding true
     }
+    flavorDimensions 'version'
+    productFlavors {
+        free {
+            dimension 'version'
+            versionNameSuffix '.free'
+        }
+        paid {
+            dimension 'version'
+            versionNameSuffix '.paid'
+        }
+    }
 }
 
 dependencies {
@@ -40,11 +64,21 @@ dependencies {
     implementation 'androidx.core:core-ktx:1.7.0'
 
     // Design
-    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.appcompat:appcompat:1.4.0'
     implementation 'com.google.android.material:material:1.4.0'
-    implementation 'androidx.constraintlayout:constraintlayout:2.1.1'
+    implementation 'androidx.constraintlayout:constraintlayout:2.1.2'
 
     // Lifecycle: ViewModel + LiveData
     implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0'
     implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.4.0'
+    implementation 'androidx.legacy:legacy-support-v4:1.0.0'
+
+    // Room
+    implementation 'androidx.room:room-runtime:2.4.0'
+    implementation 'com.google.firebase:firebase-messaging:23.0.0'
+    kapt 'androidx.room:room-compiler:2.4.0'
+
+    // Location services
+    implementation 'com.google.android.gms:play-services-maps:18.0.2'
+    implementation "com.google.android.gms:play-services-location:19.0.1"
 }
