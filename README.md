@@ -33,9 +33,3 @@ This is a note taking app. Provides for editing notes and a mark on the completi
 11/12/21 branch lesson10: Added "location" field for notes. Implemented getting and updating the location address on click.
 
 15/12/21 branch lesson10: Added Google Maps API. By clicking on the "location" field in the note, a marker on the map should be shown.
-
-09/01/22 branch lesson11: Added receiving push-notifications from Firebase.
-
-11/01/22 branch lesson12: Removed unnecessary functionality.
-
-11/01/22 branch lesson12: Added google_maps_key to properties file to .gitignore. Created free and paid productFlavors, and created beta build type with another app name.
